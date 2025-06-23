@@ -87,7 +87,7 @@ store.withStore(() => {
 
 ## `withDeepStoreContext`
 
-Runs a function within the scope of a provided store context. This allows you to re-activate a specific store context that might have previously been lost.
+Runs a function within the scope of a provided store context. This allows you to re-activate a specific store context that might have previously been lost. Common causes of this is creating new objects outside of the stores context that has adjacent stores defined.
 
 ```ts
 withDeepStoreContext<T extends Record<string, any>, R>(
