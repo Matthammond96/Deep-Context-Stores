@@ -45,3 +45,7 @@ console.log(
   "Client Nested Factory Data:",
   client.nestedFactory().getData() // Client Nested Factory Data: registry
 );
+
+registryStore.withStore(() => {
+  console.log(getDeepStore<Store>()); // registry
+});

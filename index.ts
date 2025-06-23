@@ -16,7 +16,7 @@ export function createDeepStore<
 export function createDeepStore<T extends Record<string, any>>(
   initialValue: T
 ): {
-  withStore: <U>(callback: () => U) => U;
+  withStore: <U>(func: () => U) => U;
 };
 
 export function createDeepStore<
@@ -25,15 +25,15 @@ export function createDeepStore<
 >(
   initialValue: T,
   factory?: () => R
-): R | { withStore: <U>(callback: () => U) => U } {
+): R | { withStore: <U>(func: () => U) => U } {
   const instanceId = `store_${Math.random().toString(36).slice(2, 9)}`;
   const context: StoreContext<T> = { ...initialValue, instanceId };
 
   if (!factory) {
     return {
-      withStore: <U>(callback: () => U): U => {
+      withStore: <U>(func: () => U): U => {
         const res = globalContextStore.run(context, () => {
-          return callback();
+          return func();
         });
         return typeof res === "object" && res !== null
           ? DeepContextManager.bindContext(res, context)
@@ -58,7 +58,7 @@ export const getDeepStore = <
 
 export const withDeepStoreContext = <T extends Record<string, any>, R>(
   context: StoreContext<T>,
-  callback: () => R
+  func: () => R
 ): R => {
-  return globalContextStore.run(context, callback);
+  return globalContextStore.run(context, func);
 };

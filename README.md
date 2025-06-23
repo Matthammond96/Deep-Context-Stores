@@ -13,7 +13,7 @@ createDeepStore<T extends Record<string, any>>(
 ```
 
 - **`initialValue`**: The initial state for the store (object).
-- **Returns**: An object with a `withStore` method. Use `withStore(callback)` to run a callback with the store context active.
+- **Returns**: An object with a `withStore` method. Use `withStore(func)` to run a callback with the store context active.
 
 #### Example
 
