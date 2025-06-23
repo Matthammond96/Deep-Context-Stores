@@ -19,8 +19,8 @@ function nestedFactory() {
   };
 }
 
-const deepStore1 = createDeepStore({ data: "value1" }, factory);
-const deepStore2 = createDeepStore({ data: "value2" }, factory);
+const deepStore1 = createDeepStore({ data: "value1" }, factory); //Factory called with deep store: { data: 'value1', instanceId: 'store_mxpxtmw' }
+const deepStore2 = createDeepStore({ data: "value2" }, factory); // Factory called with deep store: { data: 'value2', instanceId: 'store_v3s7gtp' }
 
 console.log("Deep Store 1:", deepStore1.data); // Deep Store 1: value1
 console.log("Deep Store 2:", deepStore2.data); // Deep Store 2: value2
