@@ -1,4 +1,3 @@
-import { create } from "domain";
 import {
   createDeepStore,
   getDeepStore,
@@ -27,6 +26,9 @@ function nestedFactory() {
 const deepStore1 = createDeepStore({ data: "value1" }, factory); //Factory called with deep store: { data: 'value1', instanceId: 'store_mxpxtmw' }
 const deepStore2 = createDeepStore({ data: "value2" }, factory); // Factory called with deep store: { data: 'value2', instanceId: 'store_v3s7gtp' }
 
+const registryStore = createDeepStore({ data: "registry" });
+const client = registryStore.withStore(factory); // Factory called with deep store: { data: 'registry', instanceId: 'store_typeupq' }
+
 console.log("Deep Store 1:", deepStore1.data); // Deep Store 1: value1
 console.log("Deep Store 2:", deepStore2.data); // Deep Store 2: value2
 console.log(
@@ -38,9 +40,6 @@ console.log(
   deepStore2.nestedFactory().getData() // Nested Factory Data from Store 2: value2
 );
 
-const registryStore = createDeepStore({ data: "registry" });
-
-const client = registryStore.withStore(factory);
 console.log("Client Data:", client.data); // Client Data: registry
 console.log(
   "Client Nested Factory Data:",

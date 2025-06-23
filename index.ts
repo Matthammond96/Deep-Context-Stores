@@ -8,14 +8,16 @@ export type StoreContext<T extends Record<string, any>> = T & {
 
 const globalContextStore = new AsyncLocalStorage<StoreContext<any>>();
 
-export function createDeepStore<T extends Record<string, any>>(
-  initialValue: T
-): { withStore: (callback: () => any) => any };
-
 export function createDeepStore<
   T extends Record<string, any>,
   R extends object
->(initialValue: T, factory?: () => R): R;
+>(initialValue: T, factory: () => R): R;
+
+export function createDeepStore<T extends Record<string, any>>(
+  initialValue: T
+): {
+  withStore: <U>(callback: () => U) => U;
+};
 
 export function createDeepStore<
   T extends Record<string, any>,
@@ -23,17 +25,19 @@ export function createDeepStore<
 >(
   initialValue: T,
   factory?: () => R
-): R | { withStore: (callback: () => any) => any } {
+): R | { withStore: <U>(callback: () => U) => U } {
   const instanceId = `store_${Math.random().toString(36).slice(2, 9)}`;
   const context: StoreContext<T> = { ...initialValue, instanceId };
 
   if (!factory) {
     return {
-      withStore: (callback: () => R): R => {
-        return globalContextStore.run(context, () => {
-          const res = callback();
-          return DeepContextManager.bindContext(res, context);
+      withStore: <U>(callback: () => U): U => {
+        const res = globalContextStore.run(context, () => {
+          return callback();
         });
+        return typeof res === "object" && res !== null
+          ? DeepContextManager.bindContext(res, context)
+          : res;
       },
     };
   }
