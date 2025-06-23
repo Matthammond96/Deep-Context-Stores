@@ -1,4 +1,4 @@
-import { withDeepContext } from "./index.ts";
+import { withDeepStoreContext } from "./index.ts";
 
 export default class DeepContextManager {
   private static boundFunctions = new WeakMap<Function, Function>();
@@ -10,7 +10,7 @@ export default class DeepContextManager {
     }
 
     const boundFn = ((...args: any[]) => {
-      return withDeepContext(context as any, () => {
+      return withDeepStoreContext(context as any, () => {
         try {
           const result = fn.apply(null, args);
 

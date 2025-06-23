@@ -1,4 +1,9 @@
-import { createDeepStore, getDeepStore } from "../index.ts";
+import { create } from "domain";
+import {
+  createDeepStore,
+  getDeepStore,
+  withDeepStoreContext,
+} from "../index.ts";
 
 type Store = {
   data: string;
@@ -9,7 +14,7 @@ export function factory() {
   console.log("Factory called with deep store:", deepStore);
   return {
     data: deepStore.data,
-    nestedFactory: nestedFactory(),
+    nestedFactory: () => withDeepStoreContext(getDeepStore(), nestedFactory),
   };
 }
 
@@ -26,9 +31,18 @@ console.log("Deep Store 1:", deepStore1.data); // Deep Store 1: value1
 console.log("Deep Store 2:", deepStore2.data); // Deep Store 2: value2
 console.log(
   "Nested Factory Data from Store 1:",
-  deepStore1.nestedFactory.getData()  // Nested Factory Data from Store 1: value1
+  deepStore1.nestedFactory().getData() // Nested Factory Data from Store 1: value1
 );
 console.log(
   "Nested Factory Data from Store 2:",
-  deepStore2.nestedFactory.getData(). // Nested Factory Data from Store 2: value2
+  deepStore2.nestedFactory().getData() // Nested Factory Data from Store 2: value2
+);
+
+const registryStore = createDeepStore({ data: "registry" });
+
+const client = registryStore.withStore(factory);
+console.log("Client Data:", client.data); // Client Data: registry
+console.log(
+  "Client Nested Factory Data:",
+  client.nestedFactory().getData() // Client Nested Factory Data: registry
 );
