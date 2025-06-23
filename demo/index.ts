@@ -9,7 +9,7 @@ export function factory() {
   console.log("Factory called with deep store:", deepStore);
   return {
     data: deepStore.data,
-    nestedFactory,
+    nestedFactory: nestedFactory(),
   };
 }
 
@@ -26,9 +26,9 @@ console.log("Deep Store 1:", deepStore1.data);
 console.log("Deep Store 2:", deepStore2.data);
 console.log(
   "Nested Factory Data from Store 1:",
-  deepStore1.nestedFactory().getData()
+  deepStore1.nestedFactory.getData()
 );
 console.log(
   "Nested Factory Data from Store 2:",
-  deepStore2.nestedFactory().getData()
+  deepStore2.nestedFactory.getData()
 );
