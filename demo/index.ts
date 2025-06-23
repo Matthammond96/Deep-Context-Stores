@@ -22,13 +22,13 @@ function nestedFactory() {
 const deepStore1 = createDeepStore({ data: "value1" }, factory);
 const deepStore2 = createDeepStore({ data: "value2" }, factory);
 
-console.log("Deep Store 1:", deepStore1.data);
-console.log("Deep Store 2:", deepStore2.data);
+console.log("Deep Store 1:", deepStore1.data); // Deep Store 1: value1
+console.log("Deep Store 2:", deepStore2.data); // Deep Store 2: value2
 console.log(
   "Nested Factory Data from Store 1:",
-  deepStore1.nestedFactory.getData()
+  deepStore1.nestedFactory.getData()  // Nested Factory Data from Store 1: value1
 );
 console.log(
   "Nested Factory Data from Store 2:",
-  deepStore2.nestedFactory.getData()
+  deepStore2.nestedFactory.getData(). // Nested Factory Data from Store 2: value2
 );
