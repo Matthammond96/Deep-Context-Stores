@@ -1,4 +1,4 @@
-import { AsyncLocalStorage } from "./polyfill";
+import { AsyncLocalStorage } from "./async-local-polyfill";
 
 import DeepContextManager from "./context";
 
