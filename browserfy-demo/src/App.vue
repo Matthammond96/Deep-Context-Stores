@@ -1,20 +1,7 @@
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="./assets/logo.svg"
-      width="125"
-      height="125"
-    />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
   <main>
-    <TheWelcome />
+    <h2>Client 1 store: {{ client1Store }}</h2>
+    <h2>Client 2 store: {{ client2Store }}</h2>
   </main>
 </template>
 
@@ -40,8 +27,8 @@ function createClient(network: string) {
 const client = createClient("mainnet");
 const devClient = createClient("devnet");
 
-console.log(client.jobs.getProgramNetwork());
-console.log(devClient.jobs.getProgramNetwork());
+const client1Store = client.jobs.getProgramNetwork();
+const client2Store = devClient.jobs.getProgramNetwork();
 </script>
 
 <style scoped>
