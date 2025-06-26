@@ -1,4 +1,4 @@
-import { AsyncLocalStorage } from "async_hooks";
+import { AsyncLocalStorage } from "./polyfill";
 
 import DeepContextManager from "./context";
 
