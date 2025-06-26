@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from "async_hooks";
 
-import DeepContextManager from "./context.ts";
+import DeepContextManager from "./context";
 
 export type StoreContext<T extends Record<string, any>> = T & {
   instanceId: string;
@@ -8,32 +8,29 @@ export type StoreContext<T extends Record<string, any>> = T & {
 
 const globalContextStore = new AsyncLocalStorage<StoreContext<any>>();
 
-export function createDeepStore<
-  T extends Record<string, any>,
-  R extends object
->(initialValue: T, factory: () => R): R;
+export function createDeepStore<T extends Record<string, any>, R extends any>(
+  initialValue: T,
+  factory: () => R
+): R;
 
 export function createDeepStore<T extends Record<string, any>>(
   initialValue: T
 ): {
-  withStore: <U>(func: () => U) => U;
+  withStore: <U>(func: (store: StoreContext<T>) => U) => U;
 };
 
-export function createDeepStore<
-  T extends Record<string, any>,
-  R extends object
->(
+export function createDeepStore<T extends Record<string, any>, R extends any>(
   initialValue: T,
   factory?: () => R
-): R | { withStore: <U>(func: () => U) => U } {
+): R | { withStore: <U>(func: (store: StoreContext<T>) => U) => U } {
   const instanceId = `store_${Math.random().toString(36).slice(2, 9)}`;
   const context: StoreContext<T> = { ...initialValue, instanceId };
 
   if (!factory) {
     return {
-      withStore: <U>(func: () => U): U => {
+      withStore: <U>(func: (store: StoreContext<T>) => U): U => {
         const res = globalContextStore.run(context, () => {
-          return func();
+          return func(context);
         });
         return typeof res === "object" && res !== null
           ? DeepContextManager.bindContext(res, context)

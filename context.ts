@@ -1,33 +1,19 @@
-import { withDeepStoreContext } from "./index.ts";
+import { withDeepStoreContext } from "./index";
 
 export default class DeepContextManager {
   private static boundFunctions = new WeakMap<Function, Function>();
   private static proxyCache = new WeakMap<object, WeakMap<object, object>>();
 
   static autoBindFunction<T extends Function, S>(fn: T, context: S): T {
-    if (this.boundFunctions.has(fn)) {
-      return this.boundFunctions.get(fn) as T;
-    }
-
-    const boundFn = ((...args: any[]) => {
+    return ((...args: any[]) => {
       return withDeepStoreContext(context as any, () => {
-        try {
-          const result = fn.apply(null, args);
-
-          if (result && typeof result === "object" && !Array.isArray(result)) {
-            return this.deepBindObject(result, context);
-          }
-
-          return result;
-        } catch (error) {
-          console.error(`Error in bound function:`, error);
-          throw error;
+        const result = fn.apply(null, args);
+        if (result && typeof result === "object" && !Array.isArray(result)) {
+          return this.deepBindObject(result, context);
         }
+        return result;
       });
     }) as unknown as T;
-
-    this.boundFunctions.set(fn, boundFn);
-    return boundFn;
   }
 
   static deepBindObject<T extends object, S>(obj: T, context: S): T {
@@ -74,7 +60,10 @@ export default class DeepContextManager {
     return proxy as T;
   }
 
-  static bindContext<T extends object, S>(obj: T, context: S): T {
-    return this.deepBindObject(obj, context);
+  static bindContext<T extends any, S>(obj: T, context: S): T {
+    if (!obj || typeof obj !== "object") {
+      return obj;
+    }
+    return this.deepBindObject(obj, context) as T;
   }
 }
