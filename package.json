@@ -6,9 +6,13 @@
   "scripts": {
     "test": "jest --config jest.config.js"
   },
-  "author": "",
+  "author": "Matthew Hammond",
   "license": "ISC",
-  "description": "",
+  "description": "Creates a new deep context store for managing scoped state and context propagation.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Matthammond96/Deep-Context-Stores"
+  },
   "dependencies": {
     "typescript": "^5.8.3"
   },
