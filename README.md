@@ -81,37 +81,61 @@ const store = createDeepStore({ data: "foo" });
 store.withStore(() => {
   const ctx = getDeepStore<Store>();
   console.log(ctx.data); // "foo"
-  console.log(ctx.instanceId); // e.g. "store_abcd123"
 });
 ```
 
-## `withDeepStoreContext`
+## `setDeepStore`
 
-Runs a function within the scope of a provided store context. This allows you to re-activate a specific store context that might have previously been lost. Common causes of this is creating new objects outside of the stores context that has adjacent stores defined.
+Updates the current store state within the active context.
 
 ```ts
-withDeepStoreContext<T extends Record<string, any>, R>(
-  context: StoreContext<T>,
-  func: () => R
-): R
+setDeepStore<T extends Record<string, any>>(
+  valueOrUpdater: Partial<T> | ((state: T) => Partial<T> | T) | T
+): void
 ```
 
-- **`context`**: The store context object to activate (must include all properties from your initial value and an `instanceId`).
-- **`func`**: A function to execute with the given context active.
-- **Returns**: The result of the callback.
-
-Use this to run code as if it were inside a specific store context, even if called from outside or from another context.
+- **`valueOrUpdater`**:
+  - An object with properties to merge into the current state,
+  - or a function that receives the current state and returns a partial or new state,
+  - or a new state object to replace the current state.
 
 #### Example
 
 ```ts
 type Store = { data: string };
 
-const store = createDeepStore({ data: "foo" });
+const store = createDeepStore<Store>({ data: "foo" });
 store.withStore(() => {
-  const ctx = getDeepStore<Store>();
-  withDeepStoreContext(ctx, () => {
-    console.log(getDeepStore<Store>().data); // "foo"
-  });
+  setDeepStore<Store>({ data: "bar" });
+  setDeepStore<Store>((state) => ({ data: state.data + "!" }));
+});
+```
+
+## `useDeepStore`
+
+A convenience hook that returns the current store state and a setter function, similar to React's `useState`.
+
+```ts
+useDeepStore<T extends Record<string, any>>(): [
+  T,
+  (valueOrUpdater: Partial<T> | ((state: T) => Partial<T> | T) | T) => void
+]
+```
+
+- **Returns**:
+  - The current store state
+  - A setter function to update the state (same signature as `setDeepStore`)
+
+#### Example
+
+```ts
+type Store = { data: string };
+
+const store = createDeepStore<Store>({ data: "foo" });
+store.withStore(() => {
+  const [state, setState] = useDeepStore<Store>();
+  console.log(state.data); // "foo"
+  setState({ data: "baz" });
+  setState((s) => ({ data: s.data + "!" }));
 });
 ```

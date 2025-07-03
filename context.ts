@@ -1,4 +1,4 @@
-import { withDeepStoreContext } from "./index";
+import { withDeepStoreContext } from "./store";
 
 export default class DeepContextManager {
   private static boundFunctions = new WeakMap<Function, Function>();

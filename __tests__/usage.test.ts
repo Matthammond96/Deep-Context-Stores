@@ -1,4 +1,4 @@
-import { createDeepStore, getDeepStore } from "..";
+import { createDeepStore, getDeepStore, setDeepStore } from "..";
 
 describe("Simple Usage", () => {
   it("should create a store without a factory and return withStore wrapper", () => {
@@ -6,9 +6,9 @@ describe("Simple Usage", () => {
 
     expect(store).toHaveProperty("withStore");
 
-    store.withStore((context) => {
-      expect(context.data).toBe("value");
-      expect(context.instanceId).toBeDefined();
+    store.withStore(({ state, instanceId }) => {
+      expect(state.data).toBe("value");
+      expect(instanceId).toBeDefined();
 
       () => {
         const deepStore = getDeepStore<{ data: string }>();
@@ -29,27 +29,44 @@ describe("Simple Usage", () => {
 });
 
 describe("Multi Instances", () => {
+  function getProgramNetwork() {
+    return getDeepStore().network;
+  }
+
+  function createJobs() {
+    return {
+      getProgramNetwork,
+    };
+  }
+
+  function createClient(network: string) {
+    return createDeepStore({ network }, () => ({
+      jobs: createJobs(),
+      updateNetwork: () =>
+        setDeepStore<{ network: string }>(({ network }) => ({
+          network: `${network} - updated`,
+        })),
+    }));
+  }
+
   it("should retain deep context across multiple instances", () => {
-    function getProgramNetwork() {
-      return getDeepStore().network;
-    }
-
-    function createJobs() {
-      return {
-        getProgramNetwork,
-      };
-    }
-
-    function createClient(network: string) {
-      return createDeepStore({ network }, () => ({
-        jobs: createJobs(),
-      }));
-    }
-
     const client = createClient("mainnet");
     const devClient = createClient("devnet");
 
     expect(client.jobs.getProgramNetwork()).toEqual("mainnet");
     expect(devClient.jobs.getProgramNetwork()).toEqual("devnet");
+  });
+  it("should be able to update it's state and retain its instance", () => {
+    const client = createClient("mainnet");
+    const devClient = createClient("devnet");
+
+    expect(client.jobs.getProgramNetwork()).toEqual("mainnet");
+    expect(devClient.jobs.getProgramNetwork()).toEqual("devnet");
+    client.updateNetwork();
+    expect(client.jobs.getProgramNetwork()).toEqual("mainnet - updated");
+    expect(devClient.jobs.getProgramNetwork()).toEqual("devnet");
+    devClient.updateNetwork();
+    expect(client.jobs.getProgramNetwork()).toEqual("mainnet - updated");
+    expect(devClient.jobs.getProgramNetwork()).toEqual("devnet - updated");
   });
 });
