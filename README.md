@@ -57,8 +57,6 @@ console.log(client.data); // bar
 console.log(client.nested()); // bar
 ```
 
-See also: [`getDeepStore`](index.ts), [`withDeepStoreContext`](index.ts)
-
 ## `getDeepStore`
 
 Retrieves the current active store context within the current execution scope.
