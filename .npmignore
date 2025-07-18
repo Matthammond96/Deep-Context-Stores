@@ -1,4 +1,8 @@
-demo/*
-browserfy-demo/*
-__tests__/*
+/src/
+demo/
+browserify-demo/
+__tests__/
 jest.config.js
+tsconfig.json
+*.test.*
+*.spec.*

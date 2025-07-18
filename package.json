@@ -1,10 +1,13 @@
 {
   "name": "deep-context-stores",
-  "version": "0.0.3",
-  "main": "index.js",
+  "version": "0.0.7",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "type": "module",
   "scripts": {
-    "test": "jest --config jest.config.js"
+    "build": "tsc",
+    "test": "jest --config jest.config.js",
+    "publish:package": "npm run build && npm publish"
   },
   "author": "Matthew Hammond",
   "license": "ISC",
@@ -14,6 +17,7 @@
     "url": "https://github.com/Matthammond96/Deep-Context-Stores"
   },
   "dependencies": {
+    "deep-context-stores": "^0.0.6",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
