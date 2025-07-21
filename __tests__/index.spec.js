@@ -1,6 +1,9 @@
-import { createDeepStore, getDeepStore, setDeepStore, useDeepStore } from "..";
-
-type Store = { data: string };
+import {
+  createDeepStore,
+  getDeepStore,
+  setDeepStore,
+  useDeepStore,
+} from "../dist/src/index.js";
 
 describe("Deep Context Stores", () => {
   describe("createDeepStore", () => {
@@ -9,16 +12,16 @@ describe("Deep Context Stores", () => {
 
       expect(store).toHaveProperty("withStore");
       store.withStore(() => {
-        expect(getDeepStore<Store>()).toEqual({ data: "foo" });
+        expect(getDeepStore()).toEqual({ data: "foo" });
       });
     });
 
     test("when passed initial state and a factory, it should return the factories value", () => {
       function clientFactory() {
-        const store = getDeepStore<Store>();
+        const store = getDeepStore();
         return {
           data: store,
-          nested: () => `nested ${getDeepStore<Store>().data}`,
+          nested: () => `nested ${getDeepStore().data}`,
         };
       }
 
@@ -29,32 +32,32 @@ describe("Deep Context Stores", () => {
   });
 
   describe("getDeepStore", () => {
-    const store = createDeepStore<Store>({ data: "foobar" });
+    const store = createDeepStore({ data: "foobar" });
     store.withStore(() => {
-      const ctx = getDeepStore<Store>();
+      const ctx = getDeepStore();
       expect(ctx).toEqual({ data: "foobar" });
     });
   });
 
   describe("setDeepStore", () => {
-    const { withStore } = createDeepStore<Store>({ data: "foo" });
+    const { withStore } = createDeepStore({ data: "foo" });
     withStore(() => {
-      const store = getDeepStore<Store>();
+      const store = getDeepStore();
       expect(store).toEqual({ data: "foo" });
-      setDeepStore<Store>({ data: "bar" });
+      setDeepStore({ data: "bar" });
       expect(store).toEqual({ data: "bar" });
-      setDeepStore<Store>((state) => ({ data: state.data + "!" }));
+      setDeepStore((state) => ({ data: state.data + "!" }));
       expect(store).toEqual({ data: "bar!" });
     });
   });
 
   describe("useDeepStore", () => {
     it("should return a get and set array", () => {
-      const { withStore } = createDeepStore<Store>({
+      const { withStore } = createDeepStore({
         data: "foo",
       });
       withStore(() => {
-        const [store, setStore] = useDeepStore<Store>();
+        const [store, setStore] = useDeepStore();
 
         expect(store).toEqual({ data: "foo" });
         setStore({ data: "bar" });

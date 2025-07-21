@@ -1,4 +1,9 @@
-import { createDeepStore, getDeepStore, setDeepStore } from "..";
+import { jest } from "@jest/globals";
+import {
+  createDeepStore,
+  getDeepStore,
+  setDeepStore,
+} from "../dist/src/index.js";
 
 describe("Simple Usage", () => {
   it("should create a store without a factory and return withStore wrapper", () => {
@@ -11,7 +16,7 @@ describe("Simple Usage", () => {
       expect(instanceId).toBeDefined();
 
       () => {
-        const deepStore = getDeepStore<{ data: string }>();
+        const deepStore = getDeepStore();
         expect(deepStore.data).toBe("value");
       };
     });
@@ -19,7 +24,7 @@ describe("Simple Usage", () => {
 
   it("should create a store with a factory and return the factory result", () => {
     const factory = jest.fn(() => ({
-      getData: () => getDeepStore<{ data: string }>().data,
+      getData: () => getDeepStore().data,
     }));
     const store = createDeepStore({ data: "value" }, factory);
 
@@ -39,11 +44,11 @@ describe("Multi Instances", () => {
     };
   }
 
-  function createClient(network: string) {
+  function createClient(network) {
     return createDeepStore({ network }, () => ({
       jobs: createJobs(),
       updateNetwork: () =>
-        setDeepStore<{ network: string }>(({ network }) => ({
+        setDeepStore(({ network }) => ({
           network: `${network} - updated`,
         })),
     }));
