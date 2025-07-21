@@ -1,9 +1,7 @@
-import {
-  createDeepStore,
-  getDeepStore,
-  setDeepStore,
-  useDeepStore,
-} from "../dist/src/index.js";
+import { loadModule } from "./loadModule";
+
+const { createDeepStore, getDeepStore, setDeepStore, useDeepStore } =
+  await loadModule();
 
 describe("Deep Context Stores", () => {
   describe("createDeepStore", () => {

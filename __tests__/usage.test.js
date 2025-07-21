@@ -1,9 +1,7 @@
 import { jest } from "@jest/globals";
-import {
-  createDeepStore,
-  getDeepStore,
-  setDeepStore,
-} from "../dist/src/index.js";
+import { loadModule } from "./loadModule";
+
+const { createDeepStore, getDeepStore, setDeepStore } = await loadModule();
 
 describe("Simple Usage", () => {
   it("should create a store without a factory and return withStore wrapper", () => {

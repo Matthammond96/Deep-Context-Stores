@@ -5,8 +5,9 @@
   "types": "dist/src/index.d.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run test:build",
     "test": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" npx jest --config jest.config.js",
+    "test:build": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" IS_BUILD=true npx jest --config jest.config.js",
     "publish:package": "npm run build && npm publish"
   },
   "author": "Matthew Hammond",
